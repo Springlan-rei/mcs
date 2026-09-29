@@ -26,20 +26,20 @@ namespace mcs
         static void Main() {
             string command;
             check();
-            LoadSevers();
-            if (!File.Exists("./servers/sevTask/Servers.xml"))//检查xml
-            {
-                ReWriteXml();//创建初始xml
-            }
             Console.WriteLine("=========================================");
             Console.WriteLine("   欢迎使用mcs —— 一个mc服务器小工具   ");
             Console.WriteLine("=========================================");
             Console.WriteLine("tips：不知道输入什么？试试输入help获取帮助");
-            int r = View();//把返回值赋值给变量
-            if(r == 1)
+            // 如果文件不存在，先创建空xml
+            if (!File.Exists("./servers/sevTask/Servers.xml"))
             {
-                Console.WriteLine("请尝试手动输入load指令");
+                Console.WriteLine("未检测到 Servers.xml，正在创建...");
+                ReWriteXml();
+                Console.WriteLine("创建成功！");
             }
+
+            LoadSevers();
+
             do
             {
                 Console.Write("@mcs:");
@@ -105,8 +105,10 @@ namespace mcs
             Console.WriteLine("save - 保存服务器到xml");
             Console.WriteLine("load - 手动加载xml");
             Console.WriteLine("view - 查看当前保存的服务器（请确认你加载了xml)");
+            Console.WriteLine("delete - 删除服务器");
             Console.WriteLine("exit - 退出程序");
             Console.WriteLine("注意：指令后面无需加参数，部分指令输入后会提示你输入相关的信息");
+            Console.WriteLine("第一次启动该程序会在特定目录自动生成一个xml，然后每次启动都会读取并加载xml");
             Console.WriteLine("如果更改xml的名字，内容或位置，程序可能无法识别或内容异常");
             Console.WriteLine("其他指令开发中...");
 
@@ -281,7 +283,7 @@ namespace mcs
 
         static int View()
         {
-            Console.WriteLine("正在加载服务器...");
+            Console.WriteLine("目前服务器列表：");
             bool l = false;
             foreach (Server s in servers)
             {
@@ -294,12 +296,11 @@ namespace mcs
             }
             if (l)
             {
-                Console.WriteLine("已加载");
                 return 0;
             }
             else
             {
-                Console.WriteLine("加载失败！");
+                Console.WriteLine("未找到服务器");
                 return 1;
             }
             
